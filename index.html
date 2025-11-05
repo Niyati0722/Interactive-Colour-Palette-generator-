@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Palette Forge — Color Palette Generator</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css" />
+	<meta name="theme-color" content="#0f172a" />
+</head>
+<body>
+	<div id="app">
+		<header class="app-header glass">
+			<div class="brand">
+				<i class="ti ti-palette"></i>
+				<h1>Palette Forge</h1>
+			</div>
+			<div class="actions">
+				<button id="btnSaveFavorite" class="icon-btn" aria-label="Save palette"><i class="ti ti-star"></i></button>
+				<button id="btnToggleTheme" class="icon-btn" aria-label="Toggle theme"><i class="ti ti-moon"></i></button>
+				<button id="btnShortcuts" class="icon-btn" aria-label="Keyboard shortcuts"><i class="ti ti-keyboard"></i></button>
+				<button id="btnGenerate" class="btn primary"><i class="ti ti-wand"></i><span>Generate</span><span class="hint">Space</span></button>
+			</div>
+		</header>
+
+		<main>
+			<section class="palette-section">
+				<div id="generationModes" class="modes glass">
+					<div class="mode-group">
+						<span class="group-title">Mood</span>
+						<div class="mode-buttons">
+							<button class="chip" data-mood="random">Random</button>
+							<button class="chip" data-mood="calm">Calm</button>
+							<button class="chip" data-mood="energetic">Energetic</button>
+							<button class="chip" data-mood="professional">Professional</button>
+							<button class="chip" data-mood="playful">Playful</button>
+							<button class="chip" data-mood="vintage">Vintage</button>
+						</div>
+					</div>
+					<div class="mode-group">
+						<span class="group-title">Harmony</span>
+						<div class="mode-buttons">
+							<button class="chip" data-harmony="complementary">Complementary</button>
+							<button class="chip" data-harmony="analogous">Analogous</button>
+							<button class="chip" data-harmony="triadic">Triadic</button>
+							<button class="chip" data-harmony="tetradic">Tetradic</button>
+							<button class="chip" data-harmony="mono">Monochromatic</button>
+						</div>
+					</div>
+					<div class="mode-group sliders">
+						<span class="group-title">Adjust</span>
+						<label>Temperature <input id="tempSlider" type="range" min="-100" max="100" value="0"></label>
+						<label>Saturation <input id="satSlider" type="range" min="-100" max="100" value="0"></label>
+						<label>Brightness <input id="lightSlider" type="range" min="-100" max="100" value="0"></label>
+						<div class="search-wrap"><input id="seedHex" type="text" placeholder="# Seed color" maxlength="7" /><button id="btnSeed" class="chip">Use</button></div>
+					</div>
+				</div>
+
+				<ul id="palette" class="palette" aria-live="polite" aria-label="Color palette of five">
+					<!-- Cards injected by JS -->
+				</ul>
+			</section>
+
+			<section class="preview-section grid">
+				<div class="preview glass">
+					<h3>Hero</h3>
+					<div class="hero-preview">
+						<h2>Design boldly.</h2>
+						<p>Instant, accessible color palettes for modern interfaces.</p>
+						<div class="hero-ctas">
+							<button class="btn primary">Get Started</button>
+							<button class="btn outline">Learn More</button>
+						</div>
+					</div>
+				</div>
+				<div class="preview glass">
+					<h3>UI Card</h3>
+					<div class="ui-card">
+						<h4>Card title</h4>
+						<p>Beautiful, accessible color systems at your fingertips.</p>
+						<button class="btn secondary">Action</button>
+					</div>
+				</div>
+				<div class="preview glass">
+					<h3>Buttons</h3>
+					<div class="button-row">
+						<button class="btn primary">Primary</button>
+						<button class="btn secondary">Secondary</button>
+						<button class="btn outline">Outline</button>
+					</div>
+				</div>
+				<div class="preview glass">
+					<h3>Bar Chart</h3>
+					<div id="barChart" class="bar-chart"></div>
+				</div>
+			</section>
+
+			<section class="tools-section grid">
+				<div class="tool glass">
+					<h3>Export</h3>
+					<div class="export-row">
+						<button class="chip" data-export="css">CSS Vars</button>
+						<button class="chip" data-export="tailwind">Tailwind</button>
+						<button class="chip" data-export="json">JSON</button>
+						<button class="chip" data-export="scss">SCSS</button>
+						<button class="chip" data-export="png">PNG</button>
+						<button class="chip" id="btnShare">Share URL</button>
+					</div>
+					<textarea id="exportOutput" class="export-output" readonly></textarea>
+				</div>
+				<div class="tool glass">
+					<h3>Accessibility</h3>
+					<div class="a11y-row">
+						<select id="colorblindSelect">
+							<option value="none">None</option>
+							<option value="protanopia">Protanopia</option>
+							<option value="deuteranopia">Deuteranopia</option>
+							<option value="tritanopia">Tritanopia</option>
+						</select>
+						<button class="chip" id="btnContrast">Check Contrast</button>
+					</div>
+					<div id="contrastResults" class="contrast-results"></div>
+				</div>
+				<div class="tool glass">
+					<h3>History & Favorites</h3>
+					<div class="hist-fav">
+						<div>
+							<h4>Recent</h4>
+							<div id="history" class="mini-palettes"></div>
+						</div>
+						<div>
+							<h4>Favorites</h4>
+							<div id="favorites" class="mini-palettes"></div>
+						</div>
+					</div>
+				</div>
+				<div class="tool glass">
+					<h3>Trending</h3>
+					<div id="trending" class="mini-palettes"></div>
+				</div>
+			</section>
+		</main>
+
+		<button id="fabGenerate" class="fab" aria-label="Generate palette"><i class="ti ti-wand"></i></button>
+	</div>
+
+	<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+	<div id="shadeModal" class="modal hidden" aria-hidden="true" aria-modal="true" role="dialog">
+		<div class="modal-content glass">
+			<div class="modal-header">
+				<h3>Shades</h3>
+				<button id="closeShade" class="icon-btn"><i class="ti ti-x"></i></button>
+			</div>
+			<div id="shadeGrid" class="shade-grid"></div>
+		</div>
+	</div>
+
+	<div id="shortcutsModal" class="modal hidden" aria-hidden="true" aria-modal="true" role="dialog">
+		<div class="modal-content glass">
+			<div class="modal-header">
+				<h3>Keyboard Shortcuts</h3>
+				<button id="closeShortcuts" class="icon-btn"><i class="ti ti-x"></i></button>
+			</div>
+			<ul class="shortcuts-list">
+				<li><kbd>Space</kbd> Generate palette</li>
+				<li><kbd>L</kbd> Lock/unlock focused color</li>
+				<li><kbd>?</kbd> Toggle this help</li>
+			</ul>
+		</div>
+	</div>
+
+	<script src="app.js"></script>
+</body>
+</html>
+
